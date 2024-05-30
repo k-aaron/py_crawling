@@ -34,8 +34,7 @@ def send_slack_webhook(text):
 def main():
 
     # 반품상품 확인할 쿠팡 상품 페이지 URL
-    urls = [f'https://www.coupang.com/vp/products/1175382107?itemId=2154072063&vendorItemId=70152352732&sourceType=srp_product_ads&clickEventId=e4f86a30-1e5a-11ef-950f-6652dce19e95&korePlacement=15&koreSubPlacement=1&q=%EB%B0%A9%EB%AC%B8%EC%86%90%EC%9E%A1%EC%9D%B4&itemsCount=36&searchId=30ce0f6647d54fb0b59628968933c54a&rank=0&isAddedCart=',
-        f'https://www.coupang.com/vp/products/2087516486?itemId=3545917205&vendorItemId=74943849351&q=%EB%B0%A9%EB%AC%B8%EC%86%90%EC%9E%A1%EC%9D%B4&itemsCount=36&searchId=30ce0f6647d54fb0b59628968933c54a&rank=1&isAddedCart=']
+    urls = [f'https://www.coupang.com/vp/products/2087516486?itemId=3545917205&vendorItemId=74943849351&q=%EB%B0%A9%EB%AC%B8%EC%86%90%EC%9E%A1%EC%9D%B4&itemsCount=36&searchId=30ce0f6647d54fb0b59628968933c54a&rank=1&isAddedCart=']
 
     while True:
         for url in urls:
@@ -52,7 +51,7 @@ def main():
             try:
                 prod_offer_banner = driver.find_element(By.XPATH, '//*[@id="prod-offer-banner"]/a/div')
                 if "반품" in prod_offer_banner.text:
-                    send_slack_webhook(f'쿠팡 반품 상품 발견!! [{prod_name.text}][{prod_offer_banner.text}]')
+                    send_slack_webhook(f'쿠팡 반품 상품 발견!! <{url}|{prod_name.text}> [{prod_offer_banner.text}]')
             except NoSuchElementException:
                 pass
 
