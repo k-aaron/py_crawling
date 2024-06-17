@@ -38,8 +38,10 @@ def main():
     sleep_seconds = [10, 14, 18, 22, 30, 33, 41, 45, 49, 55, 60, 67, 73, 79, 85, 90, 97, 104, 111, 116, 120]
 
     # 확인할 페이지 URL
-    urls = [f'https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S240503153510301175&code=T500&dCode=T502&sch_order=1&sch_choose_list=&sch_type=&sch_text=%EB%82%9C%EC%A7%80&sch_recpt_begin_dt=&sch_recpt_end_dt=&sch_use_begin_dt=&sch_use_end_dt=&svc_prior=N&sch_reqst_value=']
-    check_dates = ['20240622', '20240629']
+    urls = ['https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S240605095107904883&code=T500&dCode=T502&sch_order=1&sch_choose_list=&sch_type=&sch_text=%EB%B0%94%EB%B9%84%ED%81%90%EC%A1%B4%20%EB%82%9C%EC%A7%80%201%EC%B0%A8&sch_recpt_begin_dt=&sch_recpt_end_dt=&sch_use_begin_dt=&sch_use_end_dt=&svc_prior=N&sch_reqst_value=',
+            'https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S240605094335617569&code=T500&dCode=T502&sch_order=1&sch_choose_list=&sch_type=&sch_text=%EB%B0%94%EB%B9%84%ED%81%90%EC%A1%B4%20%EB%82%9C%EC%A7%80%201%EC%B0%A8&sch_recpt_begin_dt=&sch_recpt_end_dt=&sch_use_begin_dt=&sch_use_end_dt=&svc_prior=N&sch_reqst_value=',
+            'https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S240605093216252755&code=T500&dCode=T502&sch_order=1&sch_choose_list=&sch_type=&sch_text=%EB%B0%94%EB%B9%84%ED%81%90%EC%A1%B4%20%EB%82%9C%EC%A7%80%201%EC%B0%A8&sch_recpt_begin_dt=&sch_recpt_end_dt=&sch_use_begin_dt=&sch_use_end_dt=&svc_prior=N&sch_reqst_value=']
+    check_dates = ['20240706', '20240713', '20240720']
 
     while True:
         for url in urls:
@@ -58,6 +60,7 @@ def main():
             # 예약 가능 개수
             available_cnt = 0
             
+            page_name = driver.find_element(By.XPATH, '//*[@id="aform"]/div[1]/h4/span[1]')
             for check_date in check_dates:
                 try:
                     status_value = driver.find_element(By.XPATH, f'//*[@id="div_cal_{check_date}"]/span')
@@ -66,9 +69,9 @@ def main():
                     available_cnt = split_strings[1]
                     if current_cnt < available_cnt:
                         # 슬랙으로 메시지 보내기
-                        send_slack_webhook(f'[{check_date}][예약현황:{status_value.text}] 예약가능! \n {url}')
+                        send_slack_webhook(f'{page_name.text}[{check_date} 예약현황:{status_value.text}] 예약가능! \n {url}')
                     else:
-                        print(f'[{datetime.today().strftime("%Y-%m-%d %H:%M:%S")}][{check_date}][예약현황:{status_value.text}] 예약불가.')
+                        print(f'[{datetime.today().strftime("%Y-%m-%d %H:%M:%S")}]{page_name.text}[{check_date} 예약현황:{status_value.text}] 예약불가.')
 
                 # 예외 처리
                 except NoSuchElementException:
